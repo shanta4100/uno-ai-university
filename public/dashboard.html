@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1e40af">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/dashboard.css">
+  <title>Student Dashboard | UNO AI University</title>
+</head>
+<body>
+  <header class="topbar"><a href="/" aria-label="UNO AI University home">UNO AI University</a><button id="install" hidden>Install app</button></header>
+  <main class="dashboard">
+    <section class="welcome"><p class="eyebrow">STUDENT DASHBOARD</p><h1>Keep learning, <span id="student-name">student</span>.</h1><p>Your courses, progress, and certificates in one place.</p></section>
+    <section aria-labelledby="courses-title"><h2 id="courses-title">My courses</h2><div id="courses" class="course-grid"></div></section>
+    <section aria-labelledby="certificates-title"><h2 id="certificates-title">Certificates</h2><div id="certificates" class="certificate-card">Complete a course to earn your first certificate.</div></section>
+    <button id="billing" class="secondary">Manage subscription and invoices</button>
+  </main>
+  <script src="/dashboard.js"></script>
+</body>
+</html>

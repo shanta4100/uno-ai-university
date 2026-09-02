@@ -24,6 +24,9 @@ uno-ai-university/
 │   └── styles.css          # Main stylesheet - responsive design
 ├── js/
 │   └── main.js             # JavaScript - nav toggle, form validation
+├── server/                 # Express API, models, auth, and Stripe webhooks
+├── public/                 # Student dashboard and PWA assets
+├── test/                   # Node test runner API coverage
 ├── images/                 # Images and media assets
 ├── CLOUDFLARE.md           # Cloudflare configuration guide
 ├── DEPLOYMENT.md           # GitHub Pages deployment guide
@@ -83,6 +86,22 @@ uno-ai-university/
    ```
    http://localhost:8000
    ```
+
+### SaaS API and student dashboard
+
+```bash
+npm ci
+cp .env.example .env
+npm test
+npm start
+```
+
+The API serves `dashboard.html` and provides signup/login, Stripe checkout,
+customer portal, invoice listing, and signed webhook handling. Configure all
+Stripe and JWT values in `.env`; never commit that file.
+
+See [docs/SYSTEM_AUDIT.md](docs/SYSTEM_AUDIT.md) and
+[docs/LAUNCH_OPERATIONS.md](docs/LAUNCH_OPERATIONS.md) before production launch.
 
 ---
 
