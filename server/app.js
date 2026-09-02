@@ -21,7 +21,17 @@ function createApp({ stripe, store = createStore(), jwtSecret = process.env.JWT_
   if (!jwtSecret || jwtSecret.length < 32) throw new Error('JWT_SECRET must be set to at least 32 characters');
   const app = express();
   app.use(helmet());
-  app.use(cors({ origin: process.env.APP_URL || true }));
+  app.use(cors({ origin: process.env.APP_URL || false }));
+  const requests = new Map();
+  app.use('/api', (req, res, next) => {
+    const now = Date.now();
+    const entry = requests.get(req.ip) || { start: now, count: 0 };
+    if (now - entry.start > 60_000) { entry.start = now; entry.count = 0; }
+    entry.count += 1;
+    requests.set(req.ip, entry);
+    if (entry.count > 100) return res.status(429).json({ error: 'Too many requests' });
+    return next();
+  });
 
   // Stripe signatures must be verified against the unparsed request body.
   app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), (req, res) => {
@@ -65,10 +75,14 @@ function createApp({ stripe, store = createStore(), jwtSecret = process.env.JWT_
 
   app.post('/api/auth/signup', async (req, res) => {
     const { email, password, name = '' } = req.body || {};
-    if (!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email) || !password || password.length < 8) {
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+    const at = normalizedEmail.indexOf('@');
+    const validEmail = at > 0 && at < normalizedEmail.length - 1 &&
+      normalizedEmail.indexOf('.', at) > at + 1 &&
+      !normalizedEmail.includes('..');
+    if (!validEmail || !password || password.length < 8) {
       return res.status(400).json({ error: 'A valid email and password of at least 8 characters are required' });
     }
-    const normalizedEmail = email.trim().toLowerCase();
     if ([...store.users.values()].some((user) => user.email === normalizedEmail)) return res.status(409).json({ error: 'Email already registered' });
     const user = new User({ id: crypto.randomUUID(), email: normalizedEmail, name, passwordHash: await bcrypt.hash(password, 12) });
     store.users.set(user.id, user);
