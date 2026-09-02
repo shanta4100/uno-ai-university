@@ -1,0 +1,21 @@
+# Jekyll Configuration for GitHub Pages
+theme: jekyll-theme-minimal
+title: UNO AI University
+description: Advanced AI education and research
+show_downloads: false
+
+# Custom domain (update with your actual domain)
+# url: https://unoaiuniversity.com
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Exclude from build
+exclude:
+  - .github
+  - .gitignore
+  - README.md
+  - CNAME
